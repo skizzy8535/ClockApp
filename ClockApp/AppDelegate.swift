@@ -6,16 +6,37 @@
 //
 
 import UIKit
+import CoreData
+import UserNotifications
 
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+@UIApplicationMain
 
+class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDelegate{
 
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound]) { granted, error in
+            if granted {
+                print("Success")
+            }else if error != nil{
+                print("Failed")
+            }
+        }
+     
+
+        UNUserNotificationCenter.current().delegate = self
+
+    
+        
         return true
     }
+        
+
+        
+
 
     // MARK: UISceneSession Lifecycle
 
@@ -31,6 +52,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    
+    
+    // MARK: - Core Data stack
+
+    lazy var persistentContainer: NSPersistentContainer = {
+  
+        let container = NSPersistentContainer(name: "TimeModel")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        return container
+    }()
+
+    // MARK: - Core Data Saving support
+
+    func saveContext () {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
 
 }
 
+
+/*
+ import UserNotifications
+ 
+ UNUSerNotificatoinCenterDelegate
+ 
+ UNUSerNotificatoinCenter.current().requestAuthor
+ 
+ 
+ 
+ */
