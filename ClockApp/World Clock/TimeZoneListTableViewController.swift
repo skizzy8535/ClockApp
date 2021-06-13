@@ -9,38 +9,28 @@
 
 import UIKit
 
-
-/*
-
 protocol AddTimeZones {
-    func addTimeZones(inputTimeZone:String)
-}
-*/
-
-protocol AddTimeZones {
-    func addTimeZones(timeZone:String)
+    func addTimeZone(addedTimeZone:String)
 }
 
 
-
-class TimeZoneListTableViewController: UITableViewController ,UISearchBarDelegate{
+class TimeZoneListTableViewController: UITableViewController, UISearchBarDelegate{
     
     @IBOutlet weak var searchbarView: UISearchBar!
-    
-    var showTimeZoneDelegate:WorldClockTableViewController?
 
      var timeZones = [String]()
-     
+     var showTimeZoneDelegate:WorldClockTableViewController?
+    
      override func viewDidLoad() {
-        
-         timeZones = NSTimeZone.knownTimeZoneNames
-         searchbarView.delegate = self
-         searchbarView.placeholder = ""
-         searchbarView.showsCancelButton = true
+     
+        timeZones = NSTimeZone.knownTimeZoneNames
+        searchbarView.delegate = self
+        searchbarView.placeholder = "Choose City...."
+        searchbarView.showsCancelButton = true
      }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         timeZones.count
+        timeZones.count
     }
     
     
@@ -52,27 +42,26 @@ class TimeZoneListTableViewController: UITableViewController ,UISearchBarDelegat
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-          
-        showTimeZoneDelegate?.addTimeZones(timeZone: timeZones[indexPath.row])
+
+        showTimeZoneDelegate?.addTimeZone(addedTimeZone: timeZones[indexPath.row])
         dismiss(animated: true, completion: nil)
+        
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
         if searchBar.text != "" {
             timeZones = NSTimeZone.knownTimeZoneNames.filter({$0.contains(searchBar.text!)})
         }else{
             timeZones = NSTimeZone.knownTimeZoneNames
         }
-        tableView.reloadData()
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
+        tableView.reloadData()
+        
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         dismiss(animated: true, completion: nil)
     }
-    
-    
-    
-
     
 }

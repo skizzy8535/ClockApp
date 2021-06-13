@@ -25,12 +25,13 @@ class AlarmSettingTableViewController: UITableViewController {
     @IBOutlet weak var soundName: UILabel!
     
 
+    
     var showAlarmDelegate: AlarmMenuTableViewController?
     
     var isNewAlarm = true
     var existedAlarm:AlarmObject?
     var existedAlarmIndex = 0
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,14 +39,12 @@ class AlarmSettingTableViewController: UITableViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
- 
         if let setAlarm = existedAlarm {
             alarmPicker.setDate(setAlarm.time, animated: true)
             repeatTimes.text = setAlarm.frequency
             labelName.text = setAlarm.label
             soundName.text = setAlarm.sound
         }
-        
     }
 
     
@@ -56,7 +55,8 @@ class AlarmSettingTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+    
+    
         let segueIndex = indexPath.row
         
         if segueIndex == 0 {
@@ -66,12 +66,11 @@ class AlarmSettingTableViewController: UITableViewController {
                 }else if segueIndex == 2{
             performSegue(withIdentifier: "ChooseSoundName", sender: nil)
                 }
-        
+      
         
     }
 
     @IBAction func saveAlarmResults(_ sender: UIBarButtonItem) {
-        
         
         let alarmDate = alarmPicker.date
            
@@ -84,12 +83,11 @@ class AlarmSettingTableViewController: UITableViewController {
         }
 
         self.navigationController?.popViewController(animated: true)
+
         
     }
     
-    
-
-    
+ 
     @IBAction func sendFromFrequency(_ segue:UIStoryboardSegue){
         let frequencySource = segue.source as? AlarmRepeatTableViewController
         repeatTimes.text = frequencySource!.result ?? "Never"
@@ -104,10 +102,8 @@ class AlarmSettingTableViewController: UITableViewController {
         let alarmSource = segue.source as? AlarmSoundTableViewController
         soundName.text = alarmSource!.ringTone ?? "Marimba"
     }
-    
-    
 
-    
+
     
     
 }

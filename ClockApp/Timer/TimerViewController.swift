@@ -9,7 +9,6 @@ import UserNotifications
 
 
 class TimerViewController: UIViewController {
-  
 
     @IBOutlet weak var countdownTimer: UIDatePicker!
     @IBOutlet weak var timerLabel: UILabel!
@@ -17,106 +16,92 @@ class TimerViewController: UIViewController {
     @IBOutlet weak var startBtn: UIButton!
     @IBOutlet weak var pauseBtn: UIButton!
     
-    
-    /*
+
     var seconds = 0
-    var timer = Timer()
     var startStatus = true
-    var canPause = false
+    var pauseStatus = false
     let formatter = DateFormatter()
-    */
-    var startStatus = true
+    var timer = Timer()
+
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-  
-    }
+    
+        timerLabel.isHidden = true
+        pauseBtn.isEnabled = false
+        pauseBtn.setTitleColor(.lightGray, for: .normal)
+ }
     
 
     @IBAction func startCountdown(_ sender: Any) {
-        /*
         
         formatter.dateFormat = "HH"
-        let hours = Int(formatter.string(from: countdownTimer.date))
+        let hours = formatter.string(from: countdownTimer.date)
+        
         
         formatter.dateFormat = "mm"
-        let minutes = Int(formatter.string(from: countdownTimer.date))
+        let minutes = formatter.string(from: countdownTimer.date)
         
-    
-        seconds = hours!*60*60 + minutes!*60
-        */
-
+        seconds = Int(hours)!*60*60 + Int(minutes)!*60
+        
         
         if startStatus {
+                  
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target:self, selector: #selector(countDownHelper), userInfo: nil ,repeats: true)
             
-            /*
+            setupNotification(time: seconds)
+
             startStatus = false
-            startBtn.setTitle("Cancel", for: .normal)
             startBtn.setTitleColor(.red, for: .normal)
+            startBtn.setTitle("Cancel", for: .normal)
             
+            countdownTimer.isHidden = true
+            timerLabel.isHidden = false
             
-            canPause = true
-            pauseBtn.setTitle("Pause", for: .normal)
+            pauseStatus = true
             pauseBtn.setTitleColor(.white, for: .normal)
+            pauseBtn.setTitle("Pause", for: .normal)
             pauseBtn.isEnabled = true
-            
 
             
-            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownHelper), userInfo: nil, repeats: true)
-            
-             
-             countdownTimer.isHidden = true
-             timerLabel.isHidden = false
-             
-            setNotification(at: seconds)
-     */
-
         }else{
             
-            /*
             timer.invalidate()
-            
             removeNotification()
             
             startStatus = true
-            startBtn.setTitle("Start", for: .normal)
             startBtn.setTitleColor(.white, for: .normal)
-            
-            
-            canPause = false
-            pauseBtn.isEnabled = false
-            pauseBtn.setTitle("Pause", for: .normal)
-            pauseBtn.setTitleColor(.white, for: .normal)
+            startBtn.setTitle("Start", for: .normal)
             
             
             countdownTimer.isHidden = false
             timerLabel.isHidden = true
             
+            pauseStatus = false
+            pauseBtn.isEnabled = false
+            pauseBtn.setTitleColor(.lightGray, for: .normal)
+
         }
-*/
-        }
-            
-            
+        
     }
         
     
     @IBAction func pauseCountDown(_ sender: Any) {
         
-        /*
-        if canPause{
+        if pauseStatus{
             timer.invalidate()
             removeNotification()
+            pauseStatus = false
             pauseBtn.setTitle("Resume", for: .normal)
-            canPause = false
         }else{
-            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(countDownHelper), userInfo: nil, repeats: true)
-            setNotification(at:seconds)
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target:self, selector: #selector(countDownHelper), userInfo: nil ,repeats: true)
+            setupNotification(time: seconds)
+            pauseStatus = true
             pauseBtn.setTitle("Pause", for: .normal)
-            canPause = true
             
         }
- */
-        
         
  }
     
@@ -124,10 +109,9 @@ class TimerViewController: UIViewController {
     
     @objc func countDownHelper(){
                 
-        /*
-        seconds -= 1
         
-        let calcuHours = seconds/3600
+        seconds -= 1
+        let calcuHours = seconds / 3600
         let calcuMinutes = (seconds/60)%60
         let calcuSeconds = seconds%60
         
@@ -136,45 +120,31 @@ class TimerViewController: UIViewController {
         let showMinutes = calcuMinutes > 9 ? "\(calcuMinutes)" : "0\(calcuMinutes)"
         let showSeconds = calcuSeconds > 9 ? "\(calcuSeconds)" : "0\(calcuSeconds)"
         
+        timerLabel.text = "\(showHours):\(showMinutes):\(showSeconds)"
         
-        let realTime = "\(showHours):\(showMinutes):\(showSeconds)"
-        timerLabel.text = realTime
-        
-        
-        if seconds<=0{
+        if seconds <= 0 {
             timer.invalidate()
             return
         }
+
+}
+    
+    func setupNotification(time:Int){
+        let alarmContent = UNMutableNotificationContent()
+        alarmContent.title = ""
+        alarmContent.body = ""
+        alarmContent.sound = UNNotificationSound.default
         
-     */
+        let alarmTrigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(time), repeats: false)
+        
+        let alarmRequest = UNNotificationRequest(identifier: "alarmTrigger", content: alarmContent, trigger: alarmTrigger)
+        
+        UNUserNotificationCenter.current().add(alarmRequest, withCompletionHandler: nil)
         
     }
     
-    
-    
-    /*
-    func setNotification(at:Int) {
-        
-        let timerContent = UNMutableNotificationContent()
-        timerContent.title = "Time's Up"
-        timerContent.body = "Wakie Wakie"
-
-        let timerTrigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(at), repeats: false)
-
-        let timerRequest = UNNotificationRequest(identifier: "addTimerAlert", content: timerContent, trigger: timerTrigger)
-
-        
-        UNUserNotificationCenter.current().add(timerRequest, withCompletionHandler: nil)
-        
-    }
-    */
-    
-    
-    /*
     func removeNotification(){
-        
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["addTimerAlert"])
-
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["alarmTrigger"])
     }
-    */
+    
 }

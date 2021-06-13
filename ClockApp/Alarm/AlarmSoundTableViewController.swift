@@ -31,6 +31,7 @@ class AlarmSoundTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "alarmSoundCell", for: indexPath) as? AlarmSoundTableViewCell
         cell?.soundName.text = ringToneNames[indexPath.row]
         return cell!
+         
     }
     
     

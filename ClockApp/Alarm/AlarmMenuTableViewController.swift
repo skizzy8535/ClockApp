@@ -11,21 +11,25 @@ import UIKit
 import UserNotifications
 
 
-class AlarmMenuTableViewController: UITableViewController,SetAlarmProtocol,UpdateAlarmProtocol{
+class AlarmMenuTableViewController: UITableViewController{
     
     
     var getAlarms = [AlarmObject]()
     var setAlarmIndex :Int = 0
     var checkIndex = 0
+
+    
     
     func addAlarm(alarmDate: Date, alarmSwitch: Bool, alarmFrequency: String, alarmLabel: String, alarmSound: String,newAlarmIndex:Int) {
+        
+        
         
         var newAlarm = AlarmObject(time: alarmDate, alarmOn: alarmSwitch, frequency: alarmFrequency, label: alarmLabel, sound: alarmSound, index: newAlarmIndex)
         newAlarm.index = setAlarmIndex
         getAlarms.append(newAlarm)
         setNotification(time:newAlarm.time,sound:newAlarm.sound)
         tableView.reloadData()
-    
+        
     }
     
     func updateAlarm(updateDate: Date, updateSwitch: Bool, updateFrequency: String, updateLabel: String, updateSound: String,updateAlarmIndex:Int) {
@@ -35,10 +39,12 @@ class AlarmMenuTableViewController: UITableViewController,SetAlarmProtocol,Updat
         getAlarms[updatedAlarm.index] = updatedAlarm
     
          tableView.reloadData()
+        
     }
     
     
     func updateSwitch(atWhere: Int, switchOn: Bool) {
+        
         var updateSwitchAlarm = getAlarms[atWhere]
         updateSwitchAlarm.alarmOn = switchOn
         
@@ -55,13 +61,8 @@ class AlarmMenuTableViewController: UITableViewController,SetAlarmProtocol,Updat
         super.viewDidLoad()
     }
     
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        getAlarms.count
-    }
- 
 
-    
+
     func setNotification(time:Date,sound:String){
         let alarmContent = UNMutableNotificationContent()
         alarmContent.title = "Time's Up"
@@ -83,39 +84,43 @@ class AlarmMenuTableViewController: UITableViewController,SetAlarmProtocol,Updat
     func removeNotification(at:Int){
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["setAlarmIndex\(at)"])
     }
-    
 
 
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        getAlarms.count
+    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "alarmMenuCell", for: indexPath) as? AlarmMenuCell
+    
          let formatter = DateFormatter()
         formatter.timeStyle = .short
         
-        
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "alarmMenuCell", for: indexPath) as? AlarmMenuCell
         cell?.alarmSwitch.isOn = getAlarms[indexPath.row].alarmOn
         cell?.alarmTime.text = formatter.string(from: getAlarms[indexPath.row].time)
         cell?.updateIndex = indexPath.row
         
         cell?.updateSwitchDelegate = self
         return cell!
+        
     }
     
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-            
+       
+        
         if editingStyle == .delete{
             let num = indexPath.row
             getAlarms.remove(at: num)
             removeNotification(at:num)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
-
+     
+        
+        
     }
     
- 
- 
  
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let setAlarmVC = segue.destination as? AlarmSettingTableViewController
@@ -132,7 +137,5 @@ class AlarmMenuTableViewController: UITableViewController,SetAlarmProtocol,Updat
             setAlarmVC?.existedAlarm = getAlarms[alarmIndex!]
         }
       
-        
-        
     }
 }

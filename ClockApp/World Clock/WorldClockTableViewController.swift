@@ -10,36 +10,31 @@
 import UIKit
 
 
+class WorldClockTableViewController: UITableViewController ,AddTimeZones{
+    
+   var addTimeZones = [String]()
 
 
-class WorldClockTableViewController: UITableViewController,AddTimeZones {
-    
-    var receivedTimeZones = [String]()
-    
-    
-    func addTimeZones(timeZone: String) {
-        receivedTimeZones.append(timeZone)
+    func addTimeZone(addedTimeZone:String){
+        addTimeZones.append(addedTimeZone)
         tableView.reloadData()
     }
     
-    
-    override func viewDidLoad() {
-    }
-    
-    
-    
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        receivedTimeZones.count
+        addTimeZones.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "addWorldClockCell", for: indexPath) as? WorldClockTableViewCell
-        cell?.timezoneName.text = receivedTimeZones[indexPath.row].components(separatedBy: "/").last!
-        cell?.invisibleLabel.text = receivedTimeZones[indexPath.row]
+        cell?.timezoneName.text = addTimeZones[indexPath.row].components(separatedBy: "/").last!
+        cell?.invisibleLabel.text = addTimeZones[indexPath.row]
+        
         return cell!
+    
     }
     
+
+
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let setTimeZoneVC = segue.destination as? TimeZoneListTableViewController {
@@ -48,26 +43,14 @@ class WorldClockTableViewController: UITableViewController,AddTimeZones {
     }
     
     
-        
-    
-    }
-    
-    
-    
-    
-    
-  /*
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            recievedTimeZones.remove(at: indexPath.row)
-            duplicateTimeZones.remove(at: indexPath.row)
+            addTimeZones.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
-*/
     
-
+    }
     
-
     
 

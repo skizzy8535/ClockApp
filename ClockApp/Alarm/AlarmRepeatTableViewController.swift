@@ -31,12 +31,13 @@ class AlarmRepeatTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "frequecyCell", for: indexPath) as? FrequencyTableViewCell
         cell?.frequencyLabel.text = results[indexPath.row]
         return cell!
+        
     }
     
  
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        result = results[indexPath.row]
+     
     }
 
 

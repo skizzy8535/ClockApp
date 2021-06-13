@@ -22,10 +22,6 @@ class AlarmMenuCell: UITableViewCell {
     @IBOutlet weak var alarmTime: UILabel!
     @IBOutlet weak var alarmSwitch: UISwitch!
     
-    /*
-    var switchAtIndex:Int?
-    var showNewSwitchDelegate:AlarmMenuTableViewController?
-    */
     
     var updateSwitchDelegate:AlarmMenuTableViewController?
     var updateIndex:Int?
